@@ -20,6 +20,8 @@ void initBoard(string[][3]);
 void userInput(int&, int&);
 bool posAvailable(string[][3], int&, int&);
 void hintPrompt();
+void AIMove(string[][3], int&, int&);
+void placeOnBoard(string[][3], int&, int&, char);
 
 int main() {
 
@@ -41,24 +43,31 @@ int main() {
     while (noWin() && boardNotFull()) {
 
         //Implement HINT:
-        
+
         //prompt the user to input a location on the board. Keep prompting if the position is not available.
-        userInput(row, col);
+        //userInput(row, col);
         //check: Available()
-        while (!posAvailable(board, row, col)) {
-            userInput(row, col);
-        }
-        
-        //
+        /*while (!posAvailable(board, row, col)) {
+            //userInput(row, col);
+        }*/
+
+        //place down the mark
         if (usersTurn) {
+            userInput(row, col);
+            
+            while (!posAvailable(board, row, col)) {
+                userInput(row, col);
+            }
+            
             board[row][col] = 'X';
         } else {
-            board[row][col] = 'O';
+            //board[row][col] = 'O';
+            AIMove(board, row, col);
         }
         display(board, displayBoard);
 
         //check: noWin()--go through the win, block, corner, takeEmpty algorithm
-        
+
         //If no one wins, change user's turn.
         usersTurn = !usersTurn;
     }
@@ -77,14 +86,14 @@ bool isEven(int checkPos) {
 
 bool noWin() {
     //if(){return true}
-    cout << "Stubb";
+    cout << "Stubb\n";
     return true;
 }
 //declaring function implementations
 
 bool boardNotFull() {
     //if(){return true}
-    cout << "Stubbber";
+    cout << "Stubbber\n";
     return true;
 }
 
@@ -127,14 +136,14 @@ void userInput(int& row, int& col) {
 }
 
 bool posAvailable(string board[][3], int& row, int& col) {
-    if(board[row][col] != " "){
+    if (board[row][col] != " ") {
         cout << "This position is occupied. Enter a different position." << endl;
         return false;
-    }
-    else if (row < 0 || row > 2 || col < 0 || col > 2) {
+    } else if (row < 0 || row > 2 || col < 0 || col > 2) {
         cout << "This position is out-of-bound. Enter a different position." << endl;
         return false;
     }
+
     return true;
 }
 
@@ -146,4 +155,24 @@ void hintPrompt() {
     if (yesHint == 'Y' || yesHint == 'y') {
         //Imple Algo;
     }
+}
+
+void AIMove(string board[][3], int& row, int& col) {
+    //tells if a position is found
+    bool found = false;
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (posAvailable(board, i, j) && !found) {
+                row = i;
+                col = j;
+                found = true;
+            }
+        }
+    }
+    placeOnBoard(board, row, col, 'O');
+}
+
+void placeOnBoard(string board[][3], int& row, int& col, char symbol) {
+    board[row][col] = symbol;
 }
