@@ -1,34 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- */
 
 #include <iostream>
 #include <string>
+
 using namespace std;
 
 //declaring function prototypes
-bool noWin();
-bool boardNotFull();
+bool win();
+bool boardFull();
 bool isEven(int);
-void display(string[][3], string[][5]);
-void initBoard(string[][3]);
+void display(char[][3], string[][5]);
+void initBoard(char[][3]);
 void userInput(int&, int&);
-bool posAvailable(string[][3], int&, int&);
+bool posAvailable(char[][3], int&, int&);
 void hintPrompt();
-void AIMove(string[][3], int&, int&);
-void placeOnBoard(string[][3], int&, int&, char);
+void AIMove(char[][3], int&, int&);
+void placeOnBoard(char[][3], int&, int&, char);
 
 int main() {
 
-    string board[3][3];
+    char board[3][3];
     string displayBoard[5][5];
-    bool usersTurn = true; //place 'O'; if false, place 'X'
-    //    bool win = false;
+    bool usersTurn = true;
     int row;
     int col;
     int checkPos;
@@ -40,7 +32,7 @@ int main() {
     display(board, displayBoard);
 
     //Keep playing the game until there's a win or board is full and ends with a tie
-    while (noWin() && boardNotFull()) {
+    while (!win() && !boardFull()) {
 
         //Implement HINT:
 
@@ -84,28 +76,26 @@ bool isEven(int checkPos) {
     return false;
 }
 
-bool noWin() {
-    //if(){return true}
-    cout << "Stubb\n";
-    return true;
+bool win(){
+    return false;
 }
 //declaring function implementations
 
-bool boardNotFull() {
+bool boardFull() {
     //if(){return true}
     cout << "Stubbber\n";
-    return true;
+    return false;
 }
 
-void initBoard(string board [][3]) {
+void initBoard(char board [][3]) {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            board[i][j] = " ";
+            board[i][j] = ' ';
         }
     }
 }
 
-void display(string board[][3], string displayBoard[][5]) {
+void display(char board[][3], string displayBoard[][5]) {
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++) {
             if (isEven(i) && !isEven(j)) {
@@ -115,7 +105,8 @@ void display(string board[][3], string displayBoard[][5]) {
             } else if (!isEven(i) && isEven(j)) {
                 displayBoard[i][j] = "---";
             } else {
-                displayBoard[i][j] = " " + board[i / 2][j / 2] + " ";
+                string buffer = "  ";
+                displayBoard[i][j] = buffer.insert(1, 1, board[i / 2][j / 2]);
             }
         }
     }
@@ -135,8 +126,8 @@ void userInput(int& row, int& col) {
     cin >> col;
 }
 
-bool posAvailable(string board[][3], int& row, int& col) {
-    if (board[row][col] != " ") {
+bool posAvailable(char board[][3], int& row, int& col) {
+    if (board[row][col] != ' ') {
         cout << "This position is occupied. Enter a different position." << endl;
         return false;
     } else if (row < 0 || row > 2 || col < 0 || col > 2) {
@@ -157,7 +148,7 @@ void hintPrompt() {
     }
 }
 
-void AIMove(string board[][3], int& row, int& col) {
+void AIMove(char board[][3], int& row, int& col) {
     //tells if a position is found
     bool found = false;
 
@@ -173,6 +164,6 @@ void AIMove(string board[][3], int& row, int& col) {
     placeOnBoard(board, row, col, 'O');
 }
 
-void placeOnBoard(string board[][3], int& row, int& col, char symbol) {
+void placeOnBoard(char board[][3], int& row, int& col, char symbol) {
     board[row][col] = symbol;
 }
