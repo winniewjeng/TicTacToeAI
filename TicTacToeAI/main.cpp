@@ -5,12 +5,15 @@
 using namespace std;
 
 //declaring function prototypes
-bool win();
-bool boardFull();
+bool playerWin(char[][3], char);
+bool boardFull(char[][3]);
+bool gameOver(char[][3]);
+
 bool isEven(int);
+void printBuffer(int);
 void display(char[][3], string[][5]);
 void initBoard(char[][3]);
-void userInput(int&, int&);
+void userInput(char[][3], int&, int&);
 bool posAvailable(char[][3], int&, int&);
 void hintPrompt();
 void AIMove(char[][3], int&, int&);
@@ -18,22 +21,38 @@ void placeOnBoard(char[][3], int&, int&, char);
 
 int main() {
 
-    char board[3][3];
     string displayBoard[5][5];
-    bool usersTurn = true;
+    char board[3][3];
+
+    bool userTurn = true;
     int row;
     int col;
     int checkPos;
+    char replay = 'y';
 
-    //Initialize an empty 3x3 game board. All elements in board[][] = " " 
-    initBoard(board);
+    while(replay == 'y' || replay == 'Y'){
+        initBoard(board);
 
-    //Display the empty 5x5 game board with grids and everything
-    display(board, displayBoard);
+        while(!gameOver(board)){  
+            if (userTurn){
+                display(board, displayBoard);
+                userInput(board, row, col);
+                board[row][col] = 'X';
+            }
+            else{
+                AIMove(board, row, col);
+                printBuffer(100);
+                cout << "(the AI moved to spot x, y)\n" << endl;
+            }
+            userTurn = !userTurn;
+        }
 
-    //Keep playing the game until there's a win or board is full and ends with a tie
-    while (!win() && !boardFull()) {
+        cout << "would you like to play again? 'y' for yes, 'n' for no >>> ";
+        cin >> replay;
+    }
 
+    return 0;
+}
         //Implement HINT:
 
         //prompt the user to input a location on the board. Keep prompting if the position is not available.
@@ -44,28 +63,6 @@ int main() {
         }*/
 
         //place down the mark
-        if (usersTurn) {
-            userInput(row, col);
-            
-            while (!posAvailable(board, row, col)) {
-                userInput(row, col);
-            }
-            
-            board[row][col] = 'X';
-        } else {
-            //board[row][col] = 'O';
-            AIMove(board, row, col);
-        }
-        display(board, displayBoard);
-
-        //check: noWin()--go through the win, block, corner, takeEmpty algorithm
-
-        //If no one wins, change user's turn.
-        usersTurn = !usersTurn;
-    }
-
-    return 0;
-}
 
 //declaring function implementations
 
@@ -73,17 +70,6 @@ bool isEven(int checkPos) {
     if (checkPos % 2 == 0) {
         return true;
     }
-    return false;
-}
-
-bool win(){
-    return false;
-}
-//declaring function implementations
-
-bool boardFull() {
-    //if(){return true}
-    cout << "Stubbber\n";
     return false;
 }
 
@@ -110,28 +96,41 @@ void display(char board[][3], string displayBoard[][5]) {
             }
         }
     }
+    string sideBuffer[5][6];
+    for(int i = 0; i < 5; i++){
+        for (int j = 0; j < 6; j++){
+            if(j < 1){
+                sideBuffer[i][j] = "\t\t";
+            }
+            else{
+                sideBuffer[i][j] = displayBoard[i][j-1];
+            }
+        }
+    }
     for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-            cout << displayBoard[i][j];
+        for (int j = 0; j < 6; j++) {
+            cout << sideBuffer[i][j];
         }
         cout << endl;
     }
 }
 
-void userInput(int& row, int& col) {
-    cout << "Enter the location where you want to place your mark." << endl;
-    cout << "Row: ";
+void userInput(char board[][3], int& row, int& col) {
+    cout << "\nEnter the location where you want to place your mark.\n" << endl;
+    cout << "\t\tRow: ";
     cin >> row;
-    cout << "Col: ";
+    cout << "\t\tCol: ";
     cin >> col;
+    if(!posAvailable(board, row, col)){
+        cout << "that is not a valid location, try again." << endl;
+        userInput(board, row, col);
+    }
 }
 
 bool posAvailable(char board[][3], int& row, int& col) {
     if (board[row][col] != ' ') {
-        cout << "This position is occupied. Enter a different position." << endl;
         return false;
     } else if (row < 0 || row > 2 || col < 0 || col > 2) {
-        cout << "This position is out-of-bound. Enter a different position." << endl;
         return false;
     }
 
@@ -167,3 +166,38 @@ void AIMove(char board[][3], int& row, int& col) {
 void placeOnBoard(char board[][3], int& row, int& col, char symbol) {
     board[row][col] = symbol;
 }
+
+bool gameOver(char board[][3]){
+    if(playerWin(board, 'X')){
+        cout << "X wins!";
+        return true;
+    }
+    else if(playerWin(board, 'O')){
+        cout << "O wins!";
+        return true;
+    }
+    else if(boardFull(board)){
+        cout << "tie!";
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool boardFull(char board[][3]){
+    return false;
+}
+
+bool playerWin(char board[][3], char symbol){
+    return false;
+}
+
+void printBuffer(int lines){
+    for(int i = 0; i < lines; i++){
+        cout << endl;
+    }
+}
+
+
+
