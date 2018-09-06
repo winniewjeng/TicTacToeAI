@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3888b9789d238cde7189cf4758e9129f9d979584
 #include <iostream>
 #include <string>
 
@@ -17,18 +21,26 @@ bool posAvailable(char[][3], int&, int&);
 void hintPrompt();
 void AIMove(char[][3], int&, int&);
 void placeOnBoard(char[][3], int&, int&, char);
+<<<<<<< HEAD
 void createAlignments();
 void hasAlign(int, int&, char[][3], int&);
+=======
+>>>>>>> 3888b9789d238cde7189cf4758e9129f9d979584
 
 int main() {
 
     string displayBoard[5][5];
     char board[3][3];
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3888b9789d238cde7189cf4758e9129f9d979584
     bool userTurn = true;
     int row;
     int col;
     int checkPos;
     char replay = 'y';
+<<<<<<< HEAD
     int count = 0;
 
     while (replay == 'y' || replay == 'Y') {
@@ -63,6 +75,42 @@ int main() {
 }*/
 
 //place down the mark
+=======
+
+    while(replay == 'y' || replay == 'Y'){
+        initBoard(board);
+
+        while(!gameOver(board)){  
+            if (userTurn){
+                display(board, displayBoard);
+                userInput(board, row, col);
+                board[row][col] = 'X';
+            }
+            else{
+                AIMove(board, row, col);
+                printBuffer(100);
+                cout << "(the AI moved to spot x, y)\n" << endl;
+            }
+            userTurn = !userTurn;
+        }
+
+        cout << "would you like to play again? 'y' for yes, 'n' for no >>> ";
+        cin >> replay;
+    }
+
+    return 0;
+}
+        //Implement HINT:
+
+        //prompt the user to input a location on the board. Keep prompting if the position is not available.
+        //userInput(row, col);
+        //check: Available()
+        /*while (!posAvailable(board, row, col)) {
+            //userInput(row, col);
+        }*/
+
+        //place down the mark
+>>>>>>> 3888b9789d238cde7189cf4758e9129f9d979584
 
 //declaring function implementations
 
@@ -93,12 +141,27 @@ void display(char board[][3], string displayBoard[][5]) {
             } else {
                 string buffer = "  ";
                 displayBoard[i][j] = buffer.insert(1, 1, board[i / 2][j / 2]);
+<<<<<<< HEAD
+=======
+            }
+        }
+    }
+    string sideBuffer[5][6];
+    for(int i = 0; i < 5; i++){
+        for (int j = 0; j < 6; j++){
+            if(j < 1){
+                sideBuffer[i][j] = "\t\t";
+            }
+            else{
+                sideBuffer[i][j] = displayBoard[i][j-1];
+>>>>>>> 3888b9789d238cde7189cf4758e9129f9d979584
             }
         }
     }
     string sideBuffer[5][6];
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 6; j++) {
+<<<<<<< HEAD
             if (j < 1) {
                 sideBuffer[i][j] = "\t\t";
             } else {
@@ -108,6 +171,8 @@ void display(char board[][3], string displayBoard[][5]) {
     }
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 6; j++) {
+=======
+>>>>>>> 3888b9789d238cde7189cf4758e9129f9d979584
             cout << sideBuffer[i][j];
         }
         cout << endl;
@@ -120,7 +185,11 @@ void userInput(char board[][3], int& row, int& col) {
     cin >> row;
     cout << "\t\tCol: ";
     cin >> col;
+<<<<<<< HEAD
     if (!posAvailable(board, row, col)) {
+=======
+    if(!posAvailable(board, row, col)){
+>>>>>>> 3888b9789d238cde7189cf4758e9129f9d979584
         cout << "that is not a valid location, try again." << endl;
         userInput(board, row, col);
     }
@@ -166,6 +235,7 @@ void placeOnBoard(char board[][3], int& row, int& col, char symbol) {
     board[row][col] = symbol;
 }
 
+<<<<<<< HEAD
 bool gameOver(char board[][3]) {
     if (playerWin(board, 'X')) {
         cout << "X wins!";
@@ -177,10 +247,27 @@ bool gameOver(char board[][3]) {
         cout << "tie!";
         return true;
     } else {
+=======
+bool gameOver(char board[][3]){
+    if(playerWin(board, 'X')){
+        cout << "X wins!";
+        return true;
+    }
+    else if(playerWin(board, 'O')){
+        cout << "O wins!";
+        return true;
+    }
+    else if(boardFull(board)){
+        cout << "tie!";
+        return true;
+    }
+    else{
+>>>>>>> 3888b9789d238cde7189cf4758e9129f9d979584
         return false;
     }
 }
 
+<<<<<<< HEAD
 bool boardFull(char board[][3]) {
     return false;
 }
@@ -191,10 +278,23 @@ bool playerWin(char board[][3], char symbol) {
 
 void printBuffer(int lines) {
     for (int i = 0; i < lines; i++) {
+=======
+bool boardFull(char board[][3]){
+    return false;
+}
+
+bool playerWin(char board[][3], char symbol){
+    return false;
+}
+
+void printBuffer(int lines){
+    for(int i = 0; i < lines; i++){
+>>>>>>> 3888b9789d238cde7189cf4758e9129f9d979584
         cout << endl;
     }
 }
 
+<<<<<<< HEAD
 void hasAlign(int pos, int& skip, char alignments[][3], int& count) {
     for (int i = 0; i < 3; i++) {
         alignments[count][i] = pos;
@@ -227,3 +327,7 @@ void createAlignments() {
     }
 
 }
+=======
+
+
+>>>>>>> 3888b9789d238cde7189cf4758e9129f9d979584
