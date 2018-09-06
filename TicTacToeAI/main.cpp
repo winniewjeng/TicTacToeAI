@@ -1,79 +1,68 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- */
-
 #include <iostream>
 #include <string>
+
 using namespace std;
 
 //declaring function prototypes
-bool noWin();
-bool boardNotFull();
+bool playerWin(char[][3], char);
+bool boardFull(char[][3]);
+bool gameOver(char[][3]);
+
 bool isEven(int);
-void display(string[][3], string[][5]);
-void initBoard(string[][3]);
-void userInput(int&, int&);
-bool posAvailable(string[][3], int&, int&);
+void printBuffer(int);
+void display(char[][3], string[][5]);
+void initBoard(char[][3]);
+void userInput(char[][3], int&, int&);
+bool posAvailable(char[][3], int&, int&);
 void hintPrompt();
-void AIMove(string[][3], int&, int&);
-void placeOnBoard(string[][3], int&, int&, char);
+void AIMove(char[][3], int&, int&);
+void placeOnBoard(char[][3], int&, int&, char);
+void createAlignments();
+void hasAlign(int, int&, char[][3], int&);
 
 int main() {
 
-    string board[3][3];
     string displayBoard[5][5];
-    bool usersTurn = true; //place 'O'; if false, place 'X'
-    //    bool win = false;
+    char board[3][3];
+    bool userTurn = true;
     int row;
     int col;
     int checkPos;
+    char replay = 'y';
+    int count = 0;
 
-    //Initialize an empty 3x3 game board. All elements in board[][] = " " 
-    initBoard(board);
+    while (replay == 'y' || replay == 'Y') {
+        initBoard(board);
 
-    //Display the empty 5x5 game board with grids and everything
-    display(board, displayBoard);
-
-    //Keep playing the game until there's a win or board is full and ends with a tie
-    while (noWin() && boardNotFull()) {
-
-        //Implement HINT:
-
-        //prompt the user to input a location on the board. Keep prompting if the position is not available.
-        //userInput(row, col);
-        //check: Available()
-        /*while (!posAvailable(board, row, col)) {
-            //userInput(row, col);
-        }*/
-
-        //place down the mark
-        if (usersTurn) {
-            userInput(row, col);
-            
-            while (!posAvailable(board, row, col)) {
-                userInput(row, col);
+        while (!gameOver(board)) {
+            if (userTurn) {
+                display(board, displayBoard);
+                userInput(board, row, col);
+                board[row][col] = 'X';
+            } else {
+                AIMove(board, row, col);
+                printBuffer(9000);
+                cout << "(the AI moved to spot x, y)\n" << endl;
             }
-            
-            board[row][col] = 'X';
-        } else {
-            //board[row][col] = 'O';
-            AIMove(board, row, col);
+            userTurn = !userTurn;
         }
-        display(board, displayBoard);
 
-        //check: noWin()--go through the win, block, corner, takeEmpty algorithm
-
-        //If no one wins, change user's turn.
-        usersTurn = !usersTurn;
+        cout << "would you like to play again? 'y' for yes, 'n' for no >>> ";
+        cin >> replay;
     }
 
     return 0;
 }
+//Implement HINT:
+
+//prompt the user to input a location on the board. Keep prompting if the position is not available.
+//userInput(row, col);
+//check: Available()
+/*while (!posAvailable(board, row, col)) {
+    //userInput(row, col);
+}*/
+
+//place down the mark
 
 //declaring function implementations
 
@@ -84,28 +73,15 @@ bool isEven(int checkPos) {
     return false;
 }
 
-bool noWin() {
-    //if(){return true}
-    cout << "Stubb\n";
-    return true;
-}
-//declaring function implementations
-
-bool boardNotFull() {
-    //if(){return true}
-    cout << "Stubbber\n";
-    return true;
-}
-
-void initBoard(string board [][3]) {
+void initBoard(char board [][3]) {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            board[i][j] = " ";
+            board[i][j] = ' ';
         }
     }
 }
 
-void display(string board[][3], string displayBoard[][5]) {
+void display(char board[][3], string displayBoard[][5]) {
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++) {
             if (isEven(i) && !isEven(j)) {
@@ -115,32 +91,45 @@ void display(string board[][3], string displayBoard[][5]) {
             } else if (!isEven(i) && isEven(j)) {
                 displayBoard[i][j] = "---";
             } else {
-                displayBoard[i][j] = " " + board[i / 2][j / 2] + " ";
+                string buffer = "  ";
+                displayBoard[i][j] = buffer.insert(1, 1, board[i / 2][j / 2]);
+            }
+        }
+    }
+    string sideBuffer[5][6];
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 6; j++) {
+            if (j < 1) {
+                sideBuffer[i][j] = "\t\t";
+            } else {
+                sideBuffer[i][j] = displayBoard[i][j - 1];
             }
         }
     }
     for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-            cout << displayBoard[i][j];
+        for (int j = 0; j < 6; j++) {
+            cout << sideBuffer[i][j];
         }
         cout << endl;
     }
 }
 
-void userInput(int& row, int& col) {
-    cout << "Enter the location where you want to place your mark." << endl;
-    cout << "Row: ";
+void userInput(char board[][3], int& row, int& col) {
+    cout << "\nEnter the location where you want to place your mark.\n" << endl;
+    cout << "\t\tRow: ";
     cin >> row;
-    cout << "Col: ";
+    cout << "\t\tCol: ";
     cin >> col;
+    if (!posAvailable(board, row, col)) {
+        cout << "that is not a valid location, try again." << endl;
+        userInput(board, row, col);
+    }
 }
 
-bool posAvailable(string board[][3], int& row, int& col) {
-    if (board[row][col] != " ") {
-        cout << "This position is occupied. Enter a different position." << endl;
+bool posAvailable(char board[][3], int& row, int& col) {
+    if (board[row][col] != ' ') {
         return false;
     } else if (row < 0 || row > 2 || col < 0 || col > 2) {
-        cout << "This position is out-of-bound. Enter a different position." << endl;
         return false;
     }
 
@@ -157,7 +146,7 @@ void hintPrompt() {
     }
 }
 
-void AIMove(string board[][3], int& row, int& col) {
+void AIMove(char board[][3], int& row, int& col) {
     //tells if a position is found
     bool found = false;
 
@@ -173,6 +162,68 @@ void AIMove(string board[][3], int& row, int& col) {
     placeOnBoard(board, row, col, 'O');
 }
 
-void placeOnBoard(string board[][3], int& row, int& col, char symbol) {
+void placeOnBoard(char board[][3], int& row, int& col, char symbol) {
     board[row][col] = symbol;
+}
+
+bool gameOver(char board[][3]) {
+    if (playerWin(board, 'X')) {
+        cout << "X wins!";
+        return true;
+    } else if (playerWin(board, 'O')) {
+        cout << "O wins!";
+        return true;
+    } else if (boardFull(board)) {
+        cout << "tie!";
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool boardFull(char board[][3]) {
+    return false;
+}
+
+bool playerWin(char board[][3], char symbol) {
+    return false;
+}
+
+void printBuffer(int lines) {
+    for (int i = 0; i < lines; i++) {
+        cout << endl;
+    }
+}
+
+void hasAlign(int pos, int& skip, char alignments[][3], int& count) {
+    for (int i = 0; i < 3; i++) {
+        alignments[count][i] = pos;
+        pos += skip;
+    }
+    count++;
+}
+
+//This function basically creates 8 alignments of the possible winning combinations from the game board
+void createAlignments() {
+    char alignments[8][3]; //an array that holds 8 alignments of the winning combo
+    int count = 0; //...
+    //i, aka "skip", is an essential variable in the 8 combos
+    for (int i = 1; i < 5; i++) {
+        if (i % 2 == 0) {
+            if (i == 2) {
+                hasAlign(2, i, alignments, count);
+            } else {
+                hasAlign(0, i, alignments, count);
+            }
+        } else {
+            for (int j = 0; j < 3; j++) {
+                if (i == 1) {
+                    hasAlign((j*3), i, alignments, count);
+                } else {
+                    hasAlign(j, i, alignments, count);
+                }
+            }
+        }
+    }
+
 }
