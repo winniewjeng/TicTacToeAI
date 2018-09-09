@@ -39,9 +39,12 @@ bool isEven(int checkPos) {
     return false;
 }
 
-//NOT YET IMPLEMENTED
+//FINISHED IMPLEMENTING
 
-bool gameOver() {
+bool gameOver(char alignGridSymb[][3], int alignGridPos[][3], char board[][3]) {
+    if (aWin(alignGridSymb, alignGridPos) || boardFull(board)) {
+        return true;
+    }
     return false;
 }
 
@@ -129,8 +132,6 @@ void getBoardFromGrid(char board[][3], char grid[]) {
     board[2][2] = grid[8];
 }
 
-////NOT YET IMPLEMENTED
-//void get
 //FINISHED IMPLEMENTING
 
 void updateDisplayBoard(char board[][3], string displayBoard[][5]) {
@@ -362,3 +363,41 @@ bool hasBlank(char grid[], int& placePos) {
     return false;
 }
 
+//FINISHED IMPLEMENTING
+
+bool boardFull(char board[][3]) {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (board[i][j] == ' ') {
+                return false;
+            }
+        }
+    }
+    cout << "Tie!" << endl;
+    return true;
+}
+
+//FINISHED IMPLEMENTING
+
+bool aWin(char alignGridSymb[][3], int alignGridPos[][3]) {
+    for (int i = 0; i < 8; i++) {
+        int countO = 0;
+        int countX = 0;
+        for (int j = 0; j < 3; j++) {
+            if (alignGridSymb[i][j] == 'X') {
+                countX++;
+            } else if (alignGridSymb[i][j] == 'O') {
+                countO++;
+            }
+            //if a win is found, return true
+            if (countO == 3) {
+                cout << "AI wins!" << endl;
+                return true;
+            } else if (countX == 3) {
+                cout << "Player wins!" << endl;
+                return true;
+            }
+        }
+    }
+    return false;
+}

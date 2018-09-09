@@ -27,7 +27,7 @@ int main() {
     //display gameBoard[][] with grid position #
     displayBoardWithGridPos();
 
-    while (!gameOver()) {
+    while (!gameOver(alignGridSymb, alignGridPos, board)) {
 
         if (userTurn) {
             mark = 'X';

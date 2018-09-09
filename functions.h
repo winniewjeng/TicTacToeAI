@@ -7,7 +7,7 @@ using namespace std;
 
 void displayBoardWithGridPos();
 bool isEven(int);
-bool gameOver();//NOT YET IMPLEMENTED
+bool gameOver(char[][3], int[][3], char[][3]);
 void initGrid(char[]);
 void initBoard(char[][3]);
 void initDisplayBoard(char[][3], string[][5]); //board[3][3], displayBoard[5][5]
@@ -27,8 +27,10 @@ bool hasBlock(char[][3], int[][3], int&); //CERTAIN portion can be condensed. to
 bool hasCenter(char[], int&);
 bool hasFork(char[], int&); //NOT YET FINISHED IMPLEMENTING
 bool hasCorner(char[], int&); //NOT YET FINISHED IMPLEMENTING
-//NOT YET IMPLEMENTED
 bool hasBlank(char[], int&);
+bool boardFull(char[][3]);
+bool aWin(char[][3], int[][3]);
+
 
 
 
